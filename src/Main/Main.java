@@ -5,15 +5,20 @@ import java.io.FileNotFoundException;
 
 import parser.MiniJavaParser;
 import parser.ParseException;
-import parser.TokenMgrError;;
+import parser.TokenMgrError;
+import syntaxtree.*;
+import visitor.*;
 
 public class Main {
 	   
 	   public static void main(String [] args) throws FileNotFoundException {
 	      try {
-	    	 MiniJavaParser parser = new MiniJavaParser(new FileInputStream("Factorial.minjava"));
-	    	 parser.Goal();
-	         System.out.println("Análise Léxica e Sintática completa");
+	    	 Node root = new MiniJavaParser(new FileInputStream("Factorial.minjava")).Goal();
+	    	 
+	    	 System.out.println("Análise sintática e léxica concluída!");
+	         
+	         Object table=root.accept(new GJDepthFirst(),null); // Your assignment part is invoked here.
+	         root.accept(new GJDepthFirst(),table);
 	      }
 	      catch (ParseException e) {
 	         System.out.println("Erro Sintático : \n"+ e.toString());
