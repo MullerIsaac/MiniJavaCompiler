@@ -47,11 +47,12 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       if ( n.present() ) {
          R _ret=null;
          int _count=0;
+         LinkedList<R> l = new LinkedList<R>();
          for ( Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
-            e.nextElement().accept(this,argu);
+            l.add(e.nextElement().accept(this,argu));
             _count++;
          }
-         return _ret;
+         return (R)l;
       }
       else
          return null;
@@ -204,7 +205,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       String ClassName = (String)n.f1.accept(this, argu);
       
       if(GlobalTable.get(ClassName)!=null){
-          System.out.println("Type error");//System.out.println("ERROR:Class Redeclared");
+          System.out.println("Classe declarada mais de uma vez");
           System.exit(0);
       }
       
@@ -241,6 +242,18 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       n.f2.accept(this, argu);
       return _ret;
    }
+   
+   
+   public boolean equal(LinkedList<R> a,LinkedList<R> b){
+       if(a.size()==b.size()){
+           int i,l=a.size();
+           for(i=0;i<l;i++)
+               if(!((String)a.get(i)).equals((String)b.get(i)))
+                   return false;
+           return true;
+       }
+           return false;
+   }
 
    /**
     * f0 -> "public"
@@ -258,12 +271,34 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
     * f12 -> "}"
     */
    public R visit(MethodDeclaration n, A argu) {
+	  Table b= createTable();
+	  Set<String> Keys = GlobalTable.keySet();
+	  
+	  for(String a:Keys) {
+		  if(GlobalTable.get(a) == (Table)argu) {
+			  b.parent = a;
+			  break;
+		  }
+	  }
+	  
       R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      n.f4.accept(this, argu);
+      n.f0.accept(this, (A)b);
+      String ret = (String)n.f1.accept(this, (A)b);
+      String nome = (String)n.f2.accept(this, (A)b);
+      n.f3.accept(this, (A)b);
+      R formal = n.f4.accept(this, (A)b);
+      if(formal == null)
+    	  formal = (R)new LinkedList<R>();
+      ((LinkedList<R>)formal).addFirst((R)ret);
+      
+      if(((Table)argu).signature.get(nome)!=null && equal(((Table)argu).signature.get(nome),(LinkedList<R>)formal)){
+          System.out.println("Dois métodos com mesma assinatura");
+          System.exit(0);
+      }
+      
+      ((Table)argu).signature.put(nome,(LinkedList<R>)formal);
+      ((Table)argu).method.put(nome,b);
+      
       n.f5.accept(this, argu);
       n.f6.accept(this, argu);
       n.f7.accept(this, argu);
@@ -281,9 +316,19 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
     */
    public R visit(FormalParameterList n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      return _ret;
+      R formal = n.f0.accept(this, argu);
+      R formalrest = n.f1.accept(this, argu);
+      
+      if (formalrest == null)
+          formalrest = (R) new LinkedList<R>();
+      if (formal == null){
+          return formalrest;
+      }
+      
+      LinkedList<R> l=(LinkedList<R>) formalrest;
+      l.addFirst(formal);
+      
+      return (R)l;
    }
 
    /**
@@ -292,8 +337,15 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
     */
    public R visit(FormalParameter n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      _ret = n.f0.accept(this, argu);
+      String id = (String)n.f1.accept(this, argu);
+      
+      if(((Table)argu).var.get(id)!=null){
+          System.out.println("Variável redeclarada");
+          System.exit(0);
+      }
+      ((Table)argu).var.put(id,(String)_ret);
+        
       return _ret;
    }
 
@@ -304,7 +356,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
    public R visit(FormalParameterRest n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      _ret = n.f1.accept(this, argu);
       return _ret;
    }
 
