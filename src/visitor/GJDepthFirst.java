@@ -172,7 +172,6 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       n.f0.accept(this, argu);
       
       String ClassName = (String)n.f1.accept(this, argu);
-      System.out.println(ClassName);
       
       if(GlobalTable.containsKey(ClassName)) {
     	  System.out.println("Classe declarada mais de uma vez!");

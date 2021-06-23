@@ -10,7 +10,7 @@ import java.util.*;
  * Provides default methods which visit each node in the tree in depth-first
  * order.  Your visitors may extend this class.
  */
-public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
+public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
    //
    // Auto class visitors--probably don't need to be overridden.
    //
@@ -28,11 +28,12 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
       if ( n.present() ) {
          R _ret=null;
          int _count=0;
+         LinkedList<R> l = new LinkedList<R>(); 
          for ( Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
             e.nextElement().accept(this,argu);
             _count++;
          }
-         return _ret;
+         return (R)l;
       }
       else
          return null;
@@ -68,9 +69,13 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(Goal n, A argu) {
       R _ret=null;
+      GlobalTable = (HashMap<String, Table>)argu;
+      argu=null;
       n.f0.accept(this, argu);
       n.f1.accept(this, argu);
       n.f2.accept(this, argu);
+      
+      System.out.println("Checagem de tipos completa!");
       return _ret;
    }
 
@@ -96,17 +101,19 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(MainClass n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      String ClassName = (String)n.f1.accept(this, argu);
+      argu = (A)GlobalTable.get(ClassName);
       n.f2.accept(this, argu);
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
       n.f5.accept(this, argu);
       n.f6.accept(this, argu);
+      argu = (A)(((Table)argu).method.get("main"));
       n.f7.accept(this, argu);
       n.f8.accept(this, argu);
       n.f9.accept(this, argu);
       n.f10.accept(this, argu);
-      n.f11.accept(this, argu);
+      String id = (String)n.f11.accept(this, argu);
       n.f12.accept(this, argu);
       n.f13.accept(this, argu);
       n.f14.accept(this, argu);
@@ -136,7 +143,8 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(ClassDeclaration n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      String ClassName = (String)n.f1.accept(this, argu);
+      argu = (A)GlobalTable.get(ClassName);
       n.f2.accept(this, argu);
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
@@ -157,7 +165,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(ClassExtendsDeclaration n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      String ClassName = (String)n.f1.accept(this, argu);
+      
+      Table a=GlobalTable.get(ClassName);
+      if(GlobalTable.get(a.parent)==null){
+               System.out.println("A classe pai de "+ClassName+" não existe");
+               System.exit(0);
+      
+      }
+      argu = (A)a;
+      
       n.f2.accept(this, argu);
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
@@ -197,19 +214,29 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(MethodDeclaration n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      n.f4.accept(this, argu);
-      n.f5.accept(this, argu);
-      n.f6.accept(this, argu);
-      n.f7.accept(this, argu);
-      n.f8.accept(this, argu);
-      n.f9.accept(this, argu);
-      n.f10.accept(this, argu);
-      n.f11.accept(this, argu);
-      n.f12.accept(this, argu);
+      n.f0.accept(this, (A)null);
+      n.f1.accept(this, (A)null);
+      String funcName = (String)n.f2.accept(this, (A)null);
+      Table b = ((Table)argu).method.get(funcName);
+      Set<String> classnames = GlobalTable.keySet();
+      
+      for(String s: classnames)
+          if(GlobalTable.get(s)==argu)
+              if(funcName.equals(s)){
+                  System.out.println("Método e Classe com mesmo nome");
+                  System.exit(0);
+              }
+      
+      n.f3.accept(this, (A)b);
+      n.f4.accept(this, (A)b);
+      n.f5.accept(this, (A)b);
+      n.f6.accept(this, (A)b);
+      n.f7.accept(this, (A)b);
+      n.f8.accept(this, (A)b);
+      n.f9.accept(this, (A)b);
+      n.f10.accept(this, (A)b);
+      n.f11.accept(this, (A)b);
+      n.f12.accept(this, (A)b);
       return _ret;
    }
 
@@ -254,7 +281,19 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(Type n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      int aux = 0;
+      _ret = n.f0.accept(this, argu);
+      
+      if(n.f0.which == 3) {
+    	  Set<String> classnames=GlobalTable.keySet();
+          for(String s:classnames)
+              if(((String)_ret).equals(s))
+                  aux=1;
+          if(aux==0){
+              System.out.println("Não foi possivel declarar a variável do tipo "+_ret+", pois essa classe não existe!");
+              System.exit(0);
+          }
+      }
       return _ret;
    }
 
@@ -322,12 +361,43 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f2 -> Expression()
     * f3 -> ";"
     */
+   
+   
+   public String typeIdentifier(String id, Table a){
+	    if(a==null){
+	        System.out.println("A variavel "+id+" não foi declarada!");
+	        System.exit(0);
+	    }
+	    if(a.var.get(id)!=null)
+	        return a.var.get(id);
+	        
+	    return typeIdentifier(id,GlobalTable.get(a.parent));
+   }
+   
+   
+   public boolean Atribuivel(String a,String b){
+       if(a.equals(b))
+           return true;
+       Table x=GlobalTable.get(b);
+       while(x!=null){
+           if(a.equals(x.parent))
+               return true;
+           x=GlobalTable.get(x.parent);
+       }
+       return false;
+   }
+   
    public R visit(AssignmentStatement n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      String id = (String)n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
+      String exp = (String)n.f2.accept(this, argu);
       n.f3.accept(this, argu);
+      
+      if(!Atribuivel(typeIdentifier(id, (Table)argu), exp)) {
+    	  System.out.println("Não foi possivel atribuir "+exp+" à "+id);
+    	  System.exit(0);
+      }
       return _ret;
    }
 
@@ -342,13 +412,19 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(ArrayAssignmentStatement n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      String id = (String)n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
+      String exp = (String)n.f2.accept(this, argu);
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
-      n.f5.accept(this, argu);
+      String exp2 = (String)n.f5.accept(this, argu);
       n.f6.accept(this, argu);
+      
+      if(!(typeIdentifier(id,(Table)argu).equals("int[]") && exp.equals("int") && exp2.equals("int"))){
+          System.out.println("Erro na atribuição do vetor "+id);
+          System.exit(0);
+      }
+      
       return _ret;
    }
 
@@ -365,7 +441,13 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
       R _ret=null;
       n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
+      String a =(String)n.f2.accept(this, argu);
+      
+      if(!a.equals("boolean")){
+          System.out.println("Erro em um IfStatement, esperado uma expressão booleana");
+          System.exit(0);
+      }
+      
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
       n.f5.accept(this, argu);
@@ -384,7 +466,12 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
       R _ret=null;
       n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
+      
+      String a=(String)n.f2.accept(this, argu);
+      if(!a.equals("boolean")){
+        System.out.println("Erro no WhileStatement! Esperado uma expressão booleana");
+        System.exit(0);
+      }
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
       return _ret;
@@ -401,9 +488,14 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
       R _ret=null;
       n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
+      String a = (String)n.f2.accept(this, argu);
       n.f3.accept(this, argu);
       n.f4.accept(this, argu);
+      
+      if(!a.equals("int")) {
+    	  System.out.println("Erro! Print espera receber um tipo int");
+    	  System.exit(0);
+      }
       return _ret;
    }
 
@@ -420,7 +512,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(Expression n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      _ret = n.f0.accept(this, argu);
       return _ret;
    }
 
@@ -431,10 +523,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(AndExpression n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      String exp1 = (String)n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+      String exp2 = (String)n.f2.accept(this, argu);
+      
+      if(!(exp1.equals("boolean") && exp2.equals("boolean"))){
+          System.out.println("ERRO! AndExp espera duas expressões booleanas");
+          System.exit(0);
+      }
+      
+      return (R)"boolean";
    }
 
    /**
@@ -444,10 +542,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     */
    public R visit(CompareExpression n, A argu) {
       R _ret=null;
-      n.f0.accept(this, argu);
+      String exp1 = (String)n.f0.accept(this, argu);
       n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+      String exp2 = (String)n.f2.accept(this, argu);
+      
+      if(!(exp1.equals("int") && exp2.equals("int"))){
+          System.out.println("ERRO! Comparações espera duas expressões inteiras");
+          System.exit(0);
+      }
+      
+      return (R)"boolean";
    }
 
    /**
@@ -456,11 +560,15 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f2 -> PrimaryExpression()
     */
    public R visit(PlusExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String a= (String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   String b= (String)n.f2.accept(this, argu);
+	   if(!(a.equals("int") && b.equals("int"))){
+	       System.out.println("Erro na linha "+n);
+	       System.exit(0);
+	   }
+	   return (R)"int";
    }
 
    /**
@@ -469,11 +577,15 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f2 -> PrimaryExpression()
     */
    public R visit(MinusExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String a= (String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   String b= (String)n.f2.accept(this, argu);
+	   if(!(a.equals("int") && b.equals("int"))){
+	      System.out.println("Esperado int");
+	      System.exit(0);
+	   }
+	   return (R)"int";
    }
 
    /**
@@ -482,11 +594,15 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f2 -> PrimaryExpression()
     */
    public R visit(TimesExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String a= (String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   String b= (String)n.f2.accept(this, argu);
+	   if(!(a.equals("int") && b.equals("int"))){
+		   System.out.println("Type error");
+	       System.exit(0);
+	   }
+	   return (R)"int";
    }
 
    /**
@@ -496,12 +612,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f3 -> "]"
     */
    public R visit(ArrayLookup n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String a=(String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   String b= (String)n.f2.accept(this, argu);
+	   n.f3.accept(this, argu);
+	   if(!(a.equals("int[]") && b.equals("int"))){
+	      System.out.println("Type error");
+	      System.exit(0);
+	   }
+	   return (R)"int";
    }
 
    /**
@@ -510,12 +630,53 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f2 -> "length"
     */
    public R visit(ArrayLength n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String a=(String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   n.f2.accept(this, argu);
+	   if(!a.equals("int[]")){
+	      System.out.println("Type error");
+	      System.exit(0);
+	   }
+	   return (R)"int";
    }
+   
+   
+   public String returntypemethod(String a,LinkedList<R> params,Table b){
+	    if(b==null){
+	        System.out.println("Método "+a+" não existente");
+	        System.exit(0);
+	    }
+	   
+	    if(b.signature.get(a)==null){
+	        if(b.parent==null){
+	             System.out.println("Método "+a+" não existente");
+	        System.exit(0);
+	        }
+	        return returntypemethod(a,params,GlobalTable.get(b.parent));
+	    }
+	    LinkedList<R> l=b.signature.get(a);
+	    int i=1,len=l.size();
+	    if(params==null && len!=1){
+	        System.out.println("Parametros de "+a+" estão incorretos");
+	        System.exit(0);
+	    }
+	    if(params==null)
+	        return (String)l.get(0);
+	    if(len!=params.size()+1){
+	        System.out.println("Parametros de "+a+" estão incorretos");
+	        System.exit(0);
+	    }
+	    while(i<len){
+	       if(!Atribuivel((String)l.get(i),(String)params.get(i-1))){
+	           System.out.println("Parametros de "+a+" estão incorretos");
+	           System.exit(0);
+	       }
+	    i++;
+	    }
+	        
+	    return (String)l.get(0);
+	    }
 
    /**
     * f0 -> PrimaryExpression()
@@ -526,14 +687,19 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f5 -> ")"
     */
    public R visit(MessageSend n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      n.f4.accept(this, argu);
-      n.f5.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   String classname=(String)n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   String methodname=(String)n.f2.accept(this, argu);
+	   n.f3.accept(this, argu);
+	   LinkedList<R> params=(LinkedList<R>)n.f4.accept(this, argu);
+	   n.f5.accept(this, argu);
+	   if(GlobalTable.get(classname)==null){
+	      System.out.println("A classe "+classname+" não existe");
+	      System.exit(0);
+	   }
+	      
+	   return (R)returntypemethod(methodname,params,GlobalTable.get(classname));
    }
 
    /**
@@ -541,10 +707,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f1 -> ( ExpressionRest() )*
     */
    public R visit(ExpressionList n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   R fp = n.f0.accept(this, argu);
+	   R fpr = n.f1.accept(this, argu);
+	      
+	   if (fpr == null)
+	        fpr = (R) new LinkedList<R>();
+	   if (fp == null)
+	        return fpr;
+	   ((LinkedList<R>) fpr).addFirst(fp);
+	   return (R)fpr;
    }
 
    /**
@@ -554,7 +726,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(ExpressionRest n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      _ret = n.f1.accept(this, argu);
       return _ret;
    }
 
@@ -570,9 +742,12 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     *       | BracketExpression()
     */
    public R visit(PrimaryExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   _ret=n.f0.accept(this, argu);
+	   if(n.f0.which==3)
+	        return (R)typeIdentifier((String)_ret,(Table)argu);
+	        
+	   return _ret;
    }
 
    /**
@@ -581,7 +756,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(IntegerLiteral n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      return _ret;
+      return (R)"int";
    }
 
    /**
@@ -590,7 +765,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(TrueLiteral n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      return _ret;
+      return (R)"boolean";
    }
 
    /**
@@ -599,7 +774,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(FalseLiteral n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      return _ret;
+      return (R)"boolean";
    }
 
    /**
@@ -608,16 +783,27 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(Identifier n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      return _ret;
+      return (R)n.f0.toString();
    }
 
    /**
     * f0 -> "this"
     */
    public R visit(ThisExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   n.f0.accept(this, argu);
+	   Set<String> classnames=GlobalTable.keySet();
+	   for (String s: classnames){
+	      if(GlobalTable.get(s)==(Table)argu)
+	          return (R)s;
+	      Table t=GlobalTable.get(s);
+	      Set<String> methodnames=t.method.keySet();
+	      for(String b: methodnames)
+	          if(t.method.get(b)==(Table)argu)
+	              return (R)s;
+	      }
+	   System.out.println("This error");
+	   return _ret;
    }
 
    /**
@@ -628,13 +814,17 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f4 -> "]"
     */
    public R visit(ArrayAllocationExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      n.f4.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   n.f0.accept(this, argu);
+	   n.f1.accept(this, argu);
+	   n.f2.accept(this, argu);
+	   String a=(String)n.f3.accept(this, argu);
+	   n.f4.accept(this, argu);
+	   if(!a.equals("int")){
+	      System.out.println("Erro na alocação do vetor");
+	      System.exit(0);
+	   }
+	   return (R)"int[]";
    }
 
    /**
@@ -644,12 +834,16 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f3 -> ")"
     */
    public R visit(AllocationExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      n.f2.accept(this, argu);
-      n.f3.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   n.f0.accept(this, argu);
+	   String id=(String)n.f1.accept(this, argu);
+	   n.f2.accept(this, argu);
+	   n.f3.accept(this, argu);
+	   if(GlobalTable.get(id)==null){
+	      System.out.println("Instanciação de nova classe "+id+ "inválida");
+	      System.exit(0);
+	   }
+	   return (R)id;
    }
 
    /**
@@ -657,10 +851,14 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
     * f1 -> Expression()
     */
    public R visit(NotExpression n, A argu) {
-      R _ret=null;
-      n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
-      return _ret;
+	   R _ret=null;
+	   n.f0.accept(this, argu);
+	   String a=(String)n.f1.accept(this, argu);
+	   if(!a.equals("boolean")){
+	     System.out.println("Esperado um tipo bool");
+	     System.exit(0);
+	   }
+	   return (R)"boolean";
    }
 
    /**
@@ -671,7 +869,7 @@ public class GJDepthFirstSec<R,A> implements GJVisitor<R,A> {
    public R visit(BracketExpression n, A argu) {
       R _ret=null;
       n.f0.accept(this, argu);
-      n.f1.accept(this, argu);
+      _ret = n.f1.accept(this, argu);
       n.f2.accept(this, argu);
       return _ret;
    }

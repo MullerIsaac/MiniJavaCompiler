@@ -17,8 +17,11 @@ public class Main {
 	    	 
 	    	 System.out.println("Análise sintática e léxica concluída!");
 	         
-	         Object table=root.accept(new GJDepthFirst(),null); // Your assignment part is invoked here.
-	         root.accept(new GJDepthFirst(),table);
+	    	 //Aqui se cria a tabela de simbolos
+	         Object table=root.accept(new GJDepthFirst(),null);
+	         
+	         //Aqui faz a checagem de tipos
+	         root.accept(new GJDepthFirstSec(),table);
 	      }
 	      catch (ParseException e) {
 	         System.out.println("Erro Sintático : \n"+ e.toString());
