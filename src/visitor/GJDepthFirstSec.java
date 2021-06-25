@@ -30,7 +30,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
          int _count=0;
          LinkedList<R> l = new LinkedList<R>(); 
          for ( Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
-            e.nextElement().accept(this,argu);
+            l.add(e.nextElement().accept(this,argu));
             _count++;
          }
          return (R)l;

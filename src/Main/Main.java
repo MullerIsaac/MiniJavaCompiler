@@ -13,7 +13,7 @@ public class Main {
 	   
 	   public static void main(String [] args) throws FileNotFoundException {
 	      try {
-	    	 Node root = new MiniJavaParser(new FileInputStream("Factorial.minjava")).Goal();
+	    	 Node root = new MiniJavaParser(new FileInputStream("BinarySearch.minjava")).Goal();
 	    	 
 	    	 System.out.println("Análise sintática e léxica concluída!");
 	         

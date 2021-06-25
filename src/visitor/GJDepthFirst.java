@@ -298,14 +298,14 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       ((Table)argu).signature.put(nome,(LinkedList<R>)formal);
       ((Table)argu).method.put(nome,b);
       
-      n.f5.accept(this, argu);
-      n.f6.accept(this, argu);
-      n.f7.accept(this, argu);
-      n.f8.accept(this, argu);
-      n.f9.accept(this, argu);
-      n.f10.accept(this, argu);
-      n.f11.accept(this, argu);
-      n.f12.accept(this, argu);
+      n.f5.accept(this, (A)b);
+      n.f6.accept(this, (A)b);
+      n.f7.accept(this, (A)b);
+      n.f8.accept(this, (A)b);
+      n.f9.accept(this, (A)b);
+      n.f10.accept(this, (A)b);
+      n.f11.accept(this, (A)b);
+      n.f12.accept(this, (A)b);
       return _ret;
    }
 
