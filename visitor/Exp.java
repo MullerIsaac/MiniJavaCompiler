@@ -1,1 +1,0 @@
-package visitor;//package Translate;public abstract class Exp {    abstract Tree.Exp1 unEx();    abstract Tree.Stm unNx();    abstract Tree.Stm unCx(Temp.Label t, Temp.Label f);}
