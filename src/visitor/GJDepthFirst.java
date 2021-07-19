@@ -234,7 +234,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       String id = (String)n.f1.accept(this, argu);
       
       if(a.var.containsKey(id)) {
-    	  System.out.println("Variável redeclarada!");
+    	  System.out.println("Varivel redeclarada!");
     	  System.exit(0);
       }
       a.var.put(id, tipo);
@@ -291,7 +291,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       ((LinkedList<R>)formal).addFirst((R)ret);
       
       if(((Table)argu).signature.get(nome)!=null && equal(((Table)argu).signature.get(nome),(LinkedList<R>)formal)){
-          System.out.println("Dois métodos com mesma assinatura");
+          System.out.println("Dois mtodos com mesma assinatura");
           System.exit(0);
       }
       
@@ -340,7 +340,7 @@ public class GJDepthFirst<R,A> implements GJVisitor<R,A> {
       String id = (String)n.f1.accept(this, argu);
       
       if(((Table)argu).var.get(id)!=null){
-          System.out.println("Variável redeclarada");
+          System.out.println("Varivel redeclarada");
           System.exit(0);
       }
       ((Table)argu).var.put(id,(String)_ret);

@@ -169,7 +169,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       
       Table a=GlobalTable.get(ClassName);
       if(GlobalTable.get(a.parent)==null){
-               System.out.println("A classe pai de "+ClassName+" não existe");
+               System.out.println("A classe pai de "+ClassName+" no existe");
                System.exit(0);
       
       }
@@ -223,7 +223,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       for(String s: classnames)
           if(GlobalTable.get(s)==argu)
               if(funcName.equals(s)){
-                  System.out.println("Método e Classe com mesmo nome");
+                  System.out.println("Mtodo e Classe com mesmo nome");
                   System.exit(0);
               }
       
@@ -290,7 +290,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
               if(((String)_ret).equals(s))
                   aux=1;
           if(aux==0){
-              System.out.println("Não foi possivel declarar a variável do tipo "+_ret+", pois essa classe não existe!");
+              System.out.println("No foi possivel declarar a varivel do tipo "+_ret+", pois essa classe no existe!");
               System.exit(0);
           }
       }
@@ -365,7 +365,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
    
    public String typeIdentifier(String id, Table a){
 	    if(a==null){
-	        System.out.println("A variavel "+id+" não foi declarada!");
+	        System.out.println("A variavel "+id+" no foi declarada!");
 	        System.exit(0);
 	    }
 	    if(a.var.get(id)!=null)
@@ -395,7 +395,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       n.f3.accept(this, argu);
       
       if(!Atribuivel(typeIdentifier(id, (Table)argu), exp)) {
-    	  System.out.println("Não foi possivel atribuir "+exp+" à "+id);
+    	  System.out.println("No foi possivel atribuir "+exp+"  "+id);
     	  System.exit(0);
       }
       return _ret;
@@ -421,7 +421,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       n.f6.accept(this, argu);
       
       if(!(typeIdentifier(id,(Table)argu).equals("int[]") && exp.equals("int") && exp2.equals("int"))){
-          System.out.println("Erro na atribuição do vetor "+id);
+          System.out.println("Erro na atribuio do vetor "+id);
           System.exit(0);
       }
       
@@ -444,7 +444,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       String a =(String)n.f2.accept(this, argu);
       
       if(!a.equals("boolean")){
-          System.out.println("Erro em um IfStatement, esperado uma expressão booleana");
+          System.out.println("Erro na expresso "+a+" esperado um retorno do tipo boolean");
           System.exit(0);
       }
       
@@ -469,7 +469,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       
       String a=(String)n.f2.accept(this, argu);
       if(!a.equals("boolean")){
-        System.out.println("Erro no WhileStatement! Esperado uma expressão booleana");
+        System.out.println("Erro na expresso "+a+" esperado um retorno do tipo booleano");
         System.exit(0);
       }
       n.f3.accept(this, argu);
@@ -528,7 +528,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       String exp2 = (String)n.f2.accept(this, argu);
       
       if(!(exp1.equals("boolean") && exp2.equals("boolean"))){
-          System.out.println("ERRO! AndExp espera duas expressões booleanas");
+          System.out.println("ERRO! AndExp espera duas expresses booleanas");
           System.exit(0);
       }
       
@@ -547,7 +547,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
       String exp2 = (String)n.f2.accept(this, argu);
       
       if(!(exp1.equals("int") && exp2.equals("int"))){
-          System.out.println("ERRO! Comparações espera duas expressões inteiras");
+          System.out.println("ERRO! Comparaes espera duas expresses inteiras");
           System.exit(0);
       }
       
@@ -565,7 +565,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f1.accept(this, argu);
 	   String b= (String)n.f2.accept(this, argu);
 	   if(!(a.equals("int") && b.equals("int"))){
-	       System.out.println("Erro na linha "+n);
+	       System.out.println("Erro na expresso de soma! Esperado dois valores inteiros");
 	       System.exit(0);
 	   }
 	   return (R)"int";
@@ -582,7 +582,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f1.accept(this, argu);
 	   String b= (String)n.f2.accept(this, argu);
 	   if(!(a.equals("int") && b.equals("int"))){
-	      System.out.println("Esperado int");
+	      System.out.println("Erro na expresso de subtrao! Esperado dois valores inteiros");
 	      System.exit(0);
 	   }
 	   return (R)"int";
@@ -599,7 +599,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f1.accept(this, argu);
 	   String b= (String)n.f2.accept(this, argu);
 	   if(!(a.equals("int") && b.equals("int"))){
-		   System.out.println("Type error");
+		   System.out.println("Erro na expresso de multiplicao! Esperado dois valores inteiros");
 	       System.exit(0);
 	   }
 	   return (R)"int";
@@ -618,7 +618,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   String b= (String)n.f2.accept(this, argu);
 	   n.f3.accept(this, argu);
 	   if(!(a.equals("int[]") && b.equals("int"))){
-	      System.out.println("Type error");
+	      System.out.println("Erro na operao com arrays");
 	      System.exit(0);
 	   }
 	   return (R)"int";
@@ -635,7 +635,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f1.accept(this, argu);
 	   n.f2.accept(this, argu);
 	   if(!a.equals("int[]")){
-	      System.out.println("Type error");
+	      System.out.println("Length espera um tipo array[]");
 	      System.exit(0);
 	   }
 	   return (R)"int";
@@ -644,13 +644,13 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
    
    public String returntypemethod(String a,LinkedList<R> params,Table b){
 	    if(b==null){
-	        System.out.println("Método "+a+" não existente");
+	        System.out.println("Mtodo "+a+" no existente");
 	        System.exit(0);
 	    }
 	   
 	    if(b.signature.get(a)==null){
 	        if(b.parent==null){
-	             System.out.println("Método "+a+" não existente");
+	             System.out.println("Mtodo "+a+" no existente");
 	        System.exit(0);
 	        }
 	        return returntypemethod(a,params,GlobalTable.get(b.parent));
@@ -658,18 +658,18 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	    LinkedList<R> l=b.signature.get(a);
 	    int i=1,len=l.size();
 	    if(params==null && len!=1){
-	        System.out.println("Parametros de "+a+" estão incorretos");
+	        System.out.println("Parametros de "+a+" esto incorretos");
 	        System.exit(0);
 	    }
 	    if(params==null)
 	        return (String)l.get(0);
 	    if(len!=params.size()+1){
-	        System.out.println("Parametros de "+a+" estão incorretos");
+	        System.out.println("Parametros de "+a+" esto incorretos");
 	        System.exit(0);
 	    }
 	    while(i<len){
 	       if(!Atribuivel((String)l.get(i),(String)params.get(i-1))){
-	           System.out.println("Parametros de "+a+" estão incorretos");
+	           System.out.println("Parametros de "+a+" esto incorretos");
 	           System.exit(0);
 	       }
 	    i++;
@@ -695,7 +695,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   LinkedList<R> params=(LinkedList<R>)n.f4.accept(this, argu);
 	   n.f5.accept(this, argu);
 	   if(GlobalTable.get(classname)==null){
-	      System.out.println("A classe "+classname+" não existe");
+	      System.out.println("A classe "+classname+" no existe");
 	      System.exit(0);
 	   }
 	      
@@ -821,7 +821,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   String a=(String)n.f3.accept(this, argu);
 	   n.f4.accept(this, argu);
 	   if(!a.equals("int")){
-	      System.out.println("Erro na alocação do vetor");
+	      System.out.println("Erro na alocao do vetor");
 	      System.exit(0);
 	   }
 	   return (R)"int[]";
@@ -840,7 +840,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f2.accept(this, argu);
 	   n.f3.accept(this, argu);
 	   if(GlobalTable.get(id)==null){
-	      System.out.println("Instanciação de nova classe "+id+ "inválida");
+	      System.out.println("Instanciao de nova classe "+id+ "invlida");
 	      System.exit(0);
 	   }
 	   return (R)id;
@@ -855,7 +855,7 @@ public class GJDepthFirstSec<R,A> extends GJDepthFirst<R,A> {
 	   n.f0.accept(this, argu);
 	   String a=(String)n.f1.accept(this, argu);
 	   if(!a.equals("boolean")){
-	     System.out.println("Esperado um tipo bool");
+	     System.out.println("Esperado um tipo bool em NotEpression");
 	     System.exit(0);
 	   }
 	   return (R)"boolean";
