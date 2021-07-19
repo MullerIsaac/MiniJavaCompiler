@@ -1,0 +1,1 @@
+package Tree;import java.util.LinkedList;abstract public class Exp1 implements Hospitable {    public abstract LinkedList<Exp1> kids();    public abstract Exp1 build(LinkedList<Exp1> kids);    public abstract void accept(IntVisitor v, int d);    public abstract <R> R accept(ResultVisitor<R> v);    public abstract Temp.Temp accept(CodeVisitor v);}

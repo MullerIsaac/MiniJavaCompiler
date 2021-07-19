@@ -1,0 +1,1 @@
+package Frame;public abstract class Access {  public abstract String toString();  public abstract Tree.Exp1 exp(Tree.Exp1 e);}
